@@ -1,0 +1,23 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+
+    // Descriptive variable names with preset values
+    string itemName = "Vapormax Nike running shoes";
+    int itemQuantity = 2;
+    float itemCost = 180.0;
+    float totalCost;
+
+    // Calculate total cost
+    totalCost = itemQuantity * itemCost;
+
+    // Display the result
+    cout << "Item: " << itemName << endl;
+    cout << "Quantity: " << itemQuantity << endl;
+    cout << "Cost per item: $" << itemCost << endl;
+    cout << "Total cost: $" << totalCost << endl;
+
+    return 0;
+}
