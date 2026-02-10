@@ -1,0 +1,47 @@
+#include <iostream>
+using namespace std;
+
+int main() 
+{
+    // FIX: Correctly declare float variables
+    float n1, n2, n3;
+
+    // FIX: Prompt user correctly
+    cout << "Enter three numbers: ";
+
+    // FIX: Correct syntax using >>
+    cin >> n1 >> n2 >> n3;
+
+    // FIX: Use nested if statements to find the largest number
+    if (n1 >= n2) 
+    {
+        // FIX: Nested if to compare n1 and n3
+        if (n1 >= n3) 
+        {
+            // FIX: Output correct largest value
+            cout << "Largest number: " << n1;
+        }
+        else 
+        {
+            // FIX: Output n3 if it is larger
+            cout << "Largest number: " << n3;
+        }
+    }
+    else 
+    {
+        // FIX: Nested if to compare n2 and n3
+        if (n2 >= n3) 
+        {
+            // FIX: Output correct largest value
+            cout << "Largest number: " << n2;
+        }
+        else 
+        {
+            // FIX: Output n3 if it is larger
+            cout << "Largest number: " << n3;
+        }
+    }
+
+    // FIX: Properly end the program
+    return 0;
+}
