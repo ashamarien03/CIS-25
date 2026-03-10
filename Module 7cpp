@@ -1,0 +1,121 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// This class represents one Netflix show from the dataset.
+// Each object will store the five fields we want from the CSV file.
+class NetflixShow {
+public:
+    string type;
+    string title;
+    string director;
+    string country;
+    int releaseYear;
+
+    // This function prints the show information in a readable format.
+    void display() const {
+        cout << "Type: " << type << endl;
+        cout << "Title: " << title << endl;
+        cout << "Director: " << director << endl;
+        cout << "Country: " << country << endl;
+        cout << "Release Year: " << releaseYear << endl;
+        cout << "----------------------------" << endl;
+    }
+};
+
+// This function takes a line from the CSV file and splits it into columns.
+// It also checks for quotation marks so commas inside quotes are not treated
+// as separators.
+vector<string> parseCSV(const string& line) {
+    vector<string> columns;     // stores each column from the row
+    string value;               // current field being built
+    bool insideQuotes = false;  // keeps track of whether we are inside quotes
+
+    for (char c : line) {
+        // If we encounter a quote, toggle the insideQuotes flag
+        if (c == '"') {
+            insideQuotes = !insideQuotes;
+        }
+        // If we encounter a comma and we are NOT inside quotes,
+        // that means the field has ended.
+        else if (c == ',' && !insideQuotes) {
+            columns.push_back(value);
+            value.clear();
+        }
+        // Otherwise keep adding characters to the current field
+        else {
+            value += c;
+        }
+    }
+
+    // Add the last column after the loop ends
+    columns.push_back(value);
+
+    return columns;
+}
+
+int main() {
+
+    // Open the Kaggle dataset CSV file
+    ifstream file("netflix_titles.csv");
+
+    // Check if the file was opened successfully
+    if (!file.is_open()) {
+        cout << "Error: Could not open dataset file." << endl;
+        return 1;
+    }
+
+    vector<NetflixShow> shows;  // vector to store all NetflixShow objects
+    string line;
+
+    // Read and discard the first line of the CSV file (header row)
+    getline(file, line);
+
+    // Read the dataset one line at a time
+    while (getline(file, line)) {
+
+        // Split the current row into columns
+        vector<string> columns = parseCSV(line);
+
+        // Ensure the row has enough columns before accessing them
+        if (columns.size() > 7) {
+
+            NetflixShow show;  // create a new object
+
+            // Extract the fields we want from the dataset
+            show.type = columns[1];
+            show.title = columns[2];
+            show.director = columns[3];
+            show.country = columns[5];
+
+            // Convert the release year from string to integer
+            // If the field is empty, assign 0
+            if (!columns[7].empty())
+                show.releaseYear = stoi(columns[7]);
+            else
+                show.releaseYear = 0;
+
+            // Store the object in the vector
+            shows.push_back(show);
+        }
+    }
+
+    // Close the file after reading all data
+    file.close();
+
+    // Display the first 10 entries from the dataset
+    cout << "First 10 Netflix entries from Kaggle dataset:" << endl;
+    cout << "=============================================" << endl;
+
+    for (int i = 0; i < 10 && i < shows.size(); i++) {
+        shows[i].display();
+    }
+
+    // Print the total number of entries loaded
+    cout << "Total entries loaded: " << shows.size() << endl;
+
+    return 0;
+}
