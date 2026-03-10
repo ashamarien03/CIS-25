@@ -1,0 +1,103 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Class representing one Netflix show from the dataset
+class NetflixShow {
+public:
+    string type;
+    string title;
+    string director;
+    string country;
+    int releaseYear;
+
+    // Function to print show information
+    void display() const {
+        cout << "Type: " << type << endl;
+        cout << "Title: " << title << endl;
+        cout << "Director: " << director << endl;
+        cout << "Country: " << country << endl;
+        cout << "Release Year: " << releaseYear << endl;
+        cout << "----------------------------" << endl;
+    }
+};
+
+// Function to split a CSV line while handling quotation marks
+vector<string> parseCSV(const string& line) {
+    vector<string> columns;
+    string value;
+    bool insideQuotes = false;
+
+    for (char c : line) {
+        if (c == '"') {
+            insideQuotes = !insideQuotes;
+        }
+        else if (c == ',' && !insideQuotes) {
+            columns.push_back(value);
+            value.clear();
+        }
+        else {
+            value += c;
+        }
+    }
+
+    columns.push_back(value);
+    return columns;
+}
+
+int main() {
+
+    // Open the Kaggle dataset CSV file
+    ifstream file("netflix_titles.csv");
+
+    if (!file.is_open()) {
+        cout << "Error: Could not open dataset file." << endl;
+        return 1;
+    }
+
+    vector<NetflixShow> shows;
+    string line;
+
+    // Skip header row
+    getline(file, line);
+
+    // Read dataset line by line
+    while (getline(file, line)) {
+
+        vector<string> columns = parseCSV(line);
+
+        // Make sure the row contains enough columns
+        if (columns.size() > 7) {
+
+            NetflixShow show;
+
+            show.type = columns[1];
+            show.title = columns[2];
+            show.director = columns[3];
+            show.country = columns[5];
+
+            if (!columns[7].empty())
+                show.releaseYear = stoi(columns[7]);
+            else
+                show.releaseYear = 0;
+
+            shows.push_back(show);
+        }
+    }
+
+    file.close();
+
+    cout << "First 10 Netflix entries from Kaggle dataset:" << endl;
+    cout << "=============================================" << endl;
+
+    for (int i = 0; i < 10 && i < shows.size(); i++) {
+        shows[i].display();
+    }
+
+    cout << "Total entries loaded: " << shows.size() << endl;
+
+    return 0;
+}
